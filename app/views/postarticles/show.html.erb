@@ -1,24 +1,27 @@
 <div class="container">
-	<div class="row justify-content-center">
+	<div class="row">
 			<div class="postarticle-title-box">
-				<h2 class="postarticle-title"><%= @postarticle.title %></h2>
+			<%= render 'layouts/error_messages', error: @postarticle_comment %>
+				<h2><%= @postarticle.title %></h2>
 			</div>
 	</div>
-	<div class="row flex-row">
-		<% @postarticle.postarticle_images.each do |image| %>
-		<div class=" col-4 show-image">
-			<%= attachment_image_tag image, :image, size: "187x125", fallback: "no_image.jpg"%>
-			<% if @postarticle.user_id == current_user.id %>
-				<p><%= link_to "画像の編集",  edit_postarticle_image_path(image), class: "btn-sm btn-success edit-postarticle_#{@postarticle.id}" %></p>
-				<p><%= link_to "画像の削除", postarticle_image_path(image), method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger destroy_postarticle_#{@postarticle_image.id}" %></p>
-			<% end %>
-		</div>
-		<% end %>
-	</div>
 	<div class="row">
-		<div class="col-sm-12">
-			<div class="add-postarticle-iamge">
+		<div class="show-article-body">
+			<P class="show-article-body-text"><%= @postarticle.body %></P>
+		</div>
+	</div>
+
+	<div class ="row clearfix">
+		<div class="col-12 col-md-5">
+			<% @postarticle.postarticle_images.each do |image| %>
+				<%= attachment_image_tag image, :image, class: "show_image", fallback: "no_image.jpg"%>
+				<% if @postarticle.user_id == current_user.id %>
+					<p><%= link_to "画像の編集",  edit_postarticle_image_path(image), class: "btn-sm btn-success " %>
+					<%= link_to "画像の削除", postarticle_image_path(image), method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger" %></p>
+				<% end %>
+			<% end %>
 			<% if @postarticle.user_id == current_user.id %>
+			<div class="add-postarticle-iamge">
 				<% if @postarticle.postarticle_images.count < @max_image %>
 					<p class="add-postarticle-iamge-text">
 					写真を追加しますか？</p>
@@ -31,46 +34,66 @@
 					<% end %>
 				<% else %>
 					<p>写真は1つの記事に対して<%= @max_image %>枚までです！</p>
-					<P>たくさん写真と投稿してくれてありがとう！</P>
 				<% end %>
 			</div>
+			<% end %>
+		</div>
+		<div class="col-12 col-md-7">
+			<div class="postarticle-address">
+				<div id='map'></div>
+				<p class="postarticle-address-text">位置情報</p>
+				<p class="postarticle-address-text"><%= @postarticle.address %></p>
+			</div>
+		</div>
+	</div>
+	<div class="row clearfix">
+		<div class="col-12">
+			<div class="float-right postarticle-data">
+				<P>投稿者:<%=link_to @postarticle.user.name,user_path(@postarticle.user)  %>
+				<p>投稿日:<%= @postarticle.created_at.strftime('%Y/%m/%d') %></p>
+				<% if current_user.own_board?(@postarticle) %>
+				<%= link_to "テキストの編集", edit_postarticle_path(@postarticle), class: "btn-sm btn-success edit_postarticle_#{@postarticle.id}" %>
+				<%= link_to "投稿記事の削除",@postarticle, method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger destroy_postarticle_#{@postarticle.id}" %>
+				<% else %>
+					<%= render 'bookmarks/bookmark', postarticle: @postarticle %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+
+	<div class ="row">
+		<div class="col-12 col-md-7">
+			<h4>コメント(16文字以内)</h4>
+			<%= form_with(model: [@postarticle, @postarticle_comment], local: true) do |f| %>
+			<%= f.text_area :comment, class:"form-group form-control" %>
+			<%= f.submit "送信", class:"pull-right" %>
 			<% end %>
 		</div>
 	</div>
 
 	<div class="row">
-		<div class=""></div>
-		<div class="col-md-5">
-			<div class="pstarticle-body">
-				<P class="pstarticle-body-text"><%= @postarticle.body %></P>
-			</div>
-			<% if current_user.own_board?(@postarticle) %>
-				<%= link_to "テキストの編集", edit_postarticle_path(@postarticle), class: "btn-sm btn-success edit_postarticle_#{@postarticle.id}" %>
-				<%= link_to "投稿記事の削除",@postarticle, method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger destroy_postarticle_#{@postarticle.id}" %>
-			<% else %>
-				<%= render 'bookmarks/bookmark', postarticle: @postarticle %>
-			<% end %>
-			<div class="postarticle-date">
-				<p id="show_address">投稿日:<%= @postarticle.created_at.strftime('%Y/%m/%d') %></p>
-			</div>
-		</div>
-		<div class="col-md-7">
-			<div class="postarticle-address">
-				<p class="postarticle-address-text"><%= @postarticle.address %></p>
-				<input id="address" type="textbox" value="Sydney, NSW">
-
-				<input type="button" value="クリックすればマップを表示" onclick="codeAddress()">
-				<h2>map</h2>
-				<div id='map'></div>
-			</div>
-			
+		<div class="col-12 col-md-7">
+			<table class="table">
+				<tr>
+					<th>user</th>
+					<th>comment</th>
+				</tr>
+					<% @postarticle.postarticle_comments.each do |postarticle_comment| %>
+				<tr>
+					<td><%= link_to @postarticle.user.name, user_path(postarticle_comment.user) %>
+					</td>
+					<td><%= postarticle_comment.comment %></td>
+						<% if  postarticle_comment.user_id == current_user.id %>
+					<td><%= link_to "削除",postarticle_postarticle_comment_path(@postarticle, postarticle_comment), method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger " %></td>
+						<% end %>
+					<% end %>
+				</tr>
+			</table>
 		</div>
 	</div>
+
 </div>
-<!-- 
-<input id="address" type="textbox" value="">
-<input type="button" value="Encode" onclick="codeAddress()">
- -->
+
 <style>
 #map{
   height: 600px;
@@ -95,9 +118,6 @@
   });
 }
 
-
-
-
 function codeAddress(){
   let inputAddress = document.getElementById('address').value;
 
@@ -109,29 +129,10 @@ function codeAddress(){
           position: results[0].geometry.location
       });
     } else {
-      alert('該当する結果がありませんでした：' + status);
-    }
-  });   
-}
-
-
-
-
-function codeAddress(){
-  let inputAddress = document.getElementById('address').value;
-
-  geocoder.geocode( { 'address': inputAddress}, function(results, status) {
-    if (status == 'OK') {
-      map.setCenter(results[0].geometry.location);
-      var marker = new google.maps.Marker({
-          map: map,
-          position: results[0].geometry.location
-      });
-    } else {
-      alert('該当する結果がありませんでした：' + status);
+      alert('該当する場所がありませんでした：' + status);
     }
   });   
 }
 
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_API_KEY'] %>&callback=initMap" async defer></script> function 
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_API_KEY'] %>&callback=initMap" async defer></script>

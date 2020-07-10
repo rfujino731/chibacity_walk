@@ -23,6 +23,7 @@ class PostarticlesController < ApplicationController
 		@postarticle = Postarticle.find(params[:id])
 		@postarticle_image = PostarticleImage.new
 		@max_image = $image_par_article
+		@postarticle_comment = PostarticleComment.new
 	end
 
 	def edit
@@ -45,6 +46,6 @@ class PostarticlesController < ApplicationController
 
 	private
 	def postarticle_params
-    	params.require(:postarticle).permit(:title, :body, :address, :user_id,:latitude,:longitude, postarticle_images_attributes: [:image])
+    	params.require(:postarticle).permit(:title, :body, :address, :user_id,:latitude,:longitude, postarticle_images_images: [])
   	end
 end

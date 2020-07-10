@@ -17,4 +17,13 @@
 //= require popper
 //= require bootstrap-sprockets
 //= require_tree .
-//= require bootstrap-sprockets
+
+
+
+$('#postarticle_image_image').on('change', function () {
+    alert('Hello World');
+});
+
+$('#test').mouseover(function () {
+    alert('Hello World');
+});

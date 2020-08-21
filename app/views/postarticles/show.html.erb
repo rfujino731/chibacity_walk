@@ -1,5 +1,14 @@
 <div class="container">
 	<div class="row">
+		<div class="col-12">
+			<div class="float-right d-flex align-items-center">
+				<div id="recommend-<%= @postarticle.id %>" >
+					<%= render 'postarticle_comments/recommend', total_score: @total_score %>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
 			<div class="postarticle-title-box">
 			<%= render 'layouts/error_messages', error: @postarticle_comment %>
 				<h2><%= @postarticle.title %></h2>

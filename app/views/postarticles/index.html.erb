@@ -29,12 +29,11 @@
 						<p class="article-date">投稿日:<%= article.created_at.strftime('%Y/%m/%d') %></p>
 					</div>
 				</div>
-
 			</div>
 		<% end %>
 	<div class="row">
 		<div class="offset-md-4 text-center">
-				<%= paginate @postarticles %>
+			<%= paginate @postarticles %>
 		</div>
 	</div>
 </div>

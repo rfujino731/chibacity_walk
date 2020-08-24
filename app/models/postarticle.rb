@@ -4,7 +4,8 @@ class Postarticle < ApplicationRecord
 	has_many :bookmark, dependent: :destroy
 	has_many :postarticle_images, dependent: :destroy
 	accepts_attachments_for :postarticle_images, attachment: :image
-	validates :postarticle_images, length: {maximum: 3}
+	# 投稿写真の上限(3枚) エラーメッセージはjsのアラートで表示
+	validates :postarticle_images, length: {maximum: 3 }
 	validates :title, presence: true, length: { maximum: 16}
 	validates :address, presence: true
 	has_many :postarticle_comments, dependent: :destroy

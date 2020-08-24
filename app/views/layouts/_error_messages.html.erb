@@ -1,6 +1,6 @@
 <% if error.errors.any? %>
 	<div class="errormessage-box" >
-			<p class="errormessage-text"><%=  error.errors.count %>件のエラーがあります</p><!--エラーメッセ-->
+		<p class="errormessage-text"><%=  error.errors.count %>件のエラーがあります</p><!--エラーメッセ-->
 		<ul>
 			<%  error.errors.full_messages.each do |message| %>
 			<li class="errormessage-text"><%= message %></li>
